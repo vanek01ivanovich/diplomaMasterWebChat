@@ -1,4 +1,4 @@
-package com.diploma.master.demo.dto;
+package com.diploma.master.demo.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

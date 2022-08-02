@@ -1,2 +1,6 @@
-package com.diploma.master.demo.model.entity;public enum Role {
+package com.diploma.master.demo.model.entity;
+
+public enum Role {
+    ADMIN,
+    USER
 }

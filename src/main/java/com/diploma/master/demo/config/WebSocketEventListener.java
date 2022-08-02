@@ -1,7 +1,7 @@
 package com.diploma.master.demo.config;
 
 import com.diploma.master.demo.model.ChatMessage;
-import com.diploma.master.demo.model.MessageType;
+import com.diploma.master.demo.model.entity.MessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;

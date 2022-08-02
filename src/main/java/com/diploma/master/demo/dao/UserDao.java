@@ -1,4 +1,8 @@
 package com.diploma.master.demo.dao;
 
-public interface User {
+import com.diploma.master.demo.model.User;
+
+public interface UserDao {
+
+    User findUserByUserName(String username);
 }
