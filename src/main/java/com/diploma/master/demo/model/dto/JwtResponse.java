@@ -15,5 +15,5 @@ import java.util.Collection;
 public class JwtResponse {
     private String token;
     private String username;
-    private Collection<? extends GrantedAuthority> grantedAuthorities;
+    private Collection<? extends GrantedAuthority> authorities;
 }

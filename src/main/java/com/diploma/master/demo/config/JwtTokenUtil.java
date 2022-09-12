@@ -1,7 +1,8 @@
 package com.diploma.master.demo.config;
 
-import com.diploma.master.demo.service.UserPrincipal;
+import com.diploma.master.demo.service.serviceImpl.UserPrincipal;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenUtil {
 
@@ -20,6 +22,7 @@ public class JwtTokenUtil {
 
     public String generateJwtToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        log.info("userPrincipal getUsername {}", userPrincipal.getUsername());
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())

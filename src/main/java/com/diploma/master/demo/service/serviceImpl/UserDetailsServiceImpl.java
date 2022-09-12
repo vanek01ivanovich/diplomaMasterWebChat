@@ -1,4 +1,4 @@
-package com.diploma.master.demo.service;
+package com.diploma.master.demo.service.serviceImpl;
 
 import com.diploma.master.demo.dao.UserDao;
 import com.diploma.master.demo.model.User;
@@ -25,6 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername");
         User user = userDao.findUserByUserName(username);
+        log.info("user details: {}", user.toString());
         return new UserPrincipal(user);
     }
 }

@@ -16,6 +16,6 @@ public class DashboardController {
     @GetMapping("/user")
     public User userPage() {
         log.info("user");
-        return new User(1,"admin","admin","admin","admin","admin", Role.ADMIN);
+        return new User(1,"admin","admin","admin","admin","admin", Role.ROLE_ADMIN);
     }
 }
