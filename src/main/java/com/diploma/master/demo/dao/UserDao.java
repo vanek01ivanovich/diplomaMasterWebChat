@@ -12,11 +12,13 @@ public interface UserDao {
 
     User findUserByEmail(String email);
 
-    void insertUser(User user);
+    Integer insertUser(User user);
 
     List<User> getAllUsers();
 
     void updateUser(User user);
 
     Boolean checkIfUserNameExists(String username);
+
+    Boolean checkIfEmailExists(String email);
 }

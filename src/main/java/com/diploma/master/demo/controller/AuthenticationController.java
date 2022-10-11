@@ -3,6 +3,7 @@ package com.diploma.master.demo.controller;
 import com.diploma.master.demo.config.JwtTokenUtil;
 import com.diploma.master.demo.model.dto.AuthRequest;
 import com.diploma.master.demo.model.dto.JwtResponse;
+import com.diploma.master.demo.service.serviceImpl.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,9 +38,10 @@ public class AuthenticationController {
             ));
             log.info("Authentication {}", authentication.getAuthorities());
             String jwtToken = jwtTokenUtil.generateJwtToken(authentication);
-            UserDetails principal = (UserDetails) authentication.getPrincipal();
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
             log.info("principal {}", principal);
-            return ResponseEntity.ok(new JwtResponse(jwtToken, principal.getUsername(), principal.getAuthorities()));
+            log.info("principal get userId {}", principal.getUserId());
+            return ResponseEntity.ok(new JwtResponse(principal.getUserId(), jwtToken, principal.getUsername(), principal.getAuthorities()));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,14 +1,20 @@
 package com.diploma.master.demo.dao.impl;
 
+import com.diploma.master.demo.constansts.QueryConstants;
 import com.diploma.master.demo.dao.UserDao;
 import com.diploma.master.demo.mapper.UserMapper;
 import com.diploma.master.demo.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -25,16 +31,13 @@ public class UserDaoImpl implements UserDao {
         this.userMapper = userMapper;
     }
 
-    private final String FIND_USER_BY_EMAIL = "select user_id,username, password, name, surname, email, role from users where email = ?";
-    private final String INSERT_NEW_USER = "insert into users (user_id,username,name,email,password,role,surname) values(?,?,?,?,?,?,?)";
-    private final String GET_ALL_USERS = "select * from users";
-    private final String GET_USER_BY_ID = "select * from users where user_id = ?";
-    private final String CHECK_IF_USER_NAME_EXIST = "select count(*) from  users where username = ?";
-
     @Override
     public Optional<User> getUserByID(Integer id) {
-        User user = jdbcTemplate.queryForObject(GET_USER_BY_ID, userMapper, id);
-        return null;
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(QueryConstants.GET_USER_BY_ID, userMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -42,8 +45,7 @@ public class UserDaoImpl implements UserDao {
         log.info("findUserByUserName");
         try {
             log.info("findUserByUserName {}", username);
-            //return jdbcTemplate.queryForObject(Constants.FIND_USER_BY_EMAIL,userMapper,username);
-            return jdbcTemplate.queryForObject(FIND_USER_BY_EMAIL, userMapper, username);
+            return jdbcTemplate.queryForObject(QueryConstants.FIND_USER_BY_EMAIL, userMapper, username);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,14 +58,27 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void insertUser(User user) {
-        log.info("insertUser");
+    public Integer insertUser(User user) {
+        log.info("insertUser User {}", user);
         try {
-            jdbcTemplate.update(INSERT_NEW_USER,
-                    user.getId(),user.getUsername(),user.getName(),user.getEmail(),user.getPassword(),user.getRole(),user.getSurname());
-        }catch (Exception e){
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(con -> {
+                PreparedStatement ps = con.prepareStatement(QueryConstants.INSERT_NEW_USER,
+                        new String[]{"user_id"});
+                ps.setString(1, user.getUsername());
+                ps.setString(2, user.getName());
+                ps.setString(3, user.getEmail());
+                ps.setString(4, user.getPassword());
+                ps.setString(5, user.getRole().getValue());
+                ps.setString(6, user.getSurname());
+                return ps;
+            }, keyHolder);
+            return Objects.requireNonNull(keyHolder.getKey()).intValue();
+            //jdbcTemplate.update(QueryConstants.INSERT_NEW_USER, user.getUsername(), user.getName(), user.getEmail(), user.getPassword(), user.getRole().getValue(), user.getSurname());
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -78,7 +93,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Boolean checkIfUserNameExists(String username) {
-        Integer count = jdbcTemplate.queryForObject(CHECK_IF_USER_NAME_EXIST, Integer.class, username);
+        Integer count = jdbcTemplate.queryForObject(QueryConstants.CHECK_IF_USER_NAME_EXIST, Integer.class, username);
+        return count != null && count != 0;
+    }
+
+    @Override
+    public Boolean checkIfEmailExists(String email) {
+        Integer count = jdbcTemplate.queryForObject(QueryConstants.CHECK_IF_EMAIL_EXIST, Integer.class, email);
         return count != null && count != 0;
     }
 }

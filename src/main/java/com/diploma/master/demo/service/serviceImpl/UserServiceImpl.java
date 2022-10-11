@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao;
+    private final UserDao userDao;
     private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
@@ -21,13 +21,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Integer id) {
-        //return userDao.getUserByID(id);
-        return null;
+        return userDao.getUserByID(id).orElseThrow(() -> new RuntimeException("user with id " + id + " not found"));
+
     }
 
     @Override
-    public void insertUser(User user) {
-        userDao.insertUser(user);
+    public Integer insertUser(User user) {
+        return userDao.insertUser(user);
     }
 
     @Override
@@ -43,6 +43,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean checkIfUserNameExists(String username) {
         return userDao.checkIfUserNameExists(username);
+    }
+
+    @Override
+    public Boolean checkIfEmailExists(String email) {
+        return userDao.checkIfEmailExists(email);
     }
 
     @Override

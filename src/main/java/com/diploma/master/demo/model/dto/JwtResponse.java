@@ -13,6 +13,7 @@ import java.util.Collection;
 @Builder
 @NoArgsConstructor
 public class JwtResponse {
+    private Integer userId;
     private String token;
     private String username;
     private Collection<? extends GrantedAuthority> authorities;
